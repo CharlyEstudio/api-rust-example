@@ -1,8 +1,8 @@
 use rocket::{serde::json::{Value, serde_json::json, Json}, response::status::{Custom, NoContent}, http::Status};
 
-use crate::{DbConn, repositories::assists::AssistsRepository, models::assists::{NewPresence, Assist}};
+use crate::{repositories::assists::AssistsRepository, models::assists::{NewPresence, Assist}, routes::DbConn};
 
-#[rocket::get("/assists")]
+#[rocket::get("/")]
 pub async fn get_assists(db: DbConn) -> Result<Value, Custom<Value>> {
   db.run(|c| {
     AssistsRepository::find_multiple(c, 100)
@@ -11,7 +11,7 @@ pub async fn get_assists(db: DbConn) -> Result<Value, Custom<Value>> {
   }).await
 }
 
-#[rocket::get("/assists/<id>")]
+#[rocket::get("/<id>")]
 pub async fn view_presence(id: i32, db: DbConn) -> Result<Value, Custom<Value>> {
   db.run(move |c| {
     AssistsRepository::find(c, id)
@@ -20,7 +20,7 @@ pub async fn view_presence(id: i32, db: DbConn) -> Result<Value, Custom<Value>> 
   }).await
 }
 
-#[rocket::post("/assists", format="json", data="<new_presence>")]
+#[rocket::post("/", format="json", data="<new_presence>")]
 pub async fn create_assist(new_presence: Json<NewPresence>, db: DbConn) -> Result<Custom<Value>, Custom<Value>> {
   db.run(move |c| {
     AssistsRepository::create(c, new_presence.into_inner())
@@ -30,7 +30,7 @@ pub async fn create_assist(new_presence: Json<NewPresence>, db: DbConn) -> Resul
   .await
 }
 
-#[rocket::put("/assists/<id>", format="json", data="<presence>")]
+#[rocket::put("/<id>", format="json", data="<presence>")]
 pub async fn update_assist(id: i32, presence: Json<Assist>, db: DbConn) -> Result<Value, Custom<Value>> {
   db.run(move |c| {
     AssistsRepository::update(c, id, presence.into_inner())

@@ -1,8 +1,8 @@
 use rocket::{serde::json::{Json, serde_json::json, Value}, response::status::{Custom, NoContent}, http::Status};
 
-use crate::{models::students::{NewStudent, Student}, DbConn, repositories::students::StudentsRepository};
+use crate::{models::students::{NewStudent, Student}, repositories::students::StudentsRepository, routes::DbConn};
 
-#[rocket::get("/students")]
+#[rocket::get("/")]
 pub async fn get_students(db: DbConn) -> Result<Value, Custom<Value>> {
   db.run(|c| {
     StudentsRepository::find_multiple(c, 100)
@@ -11,7 +11,7 @@ pub async fn get_students(db: DbConn) -> Result<Value, Custom<Value>> {
   }).await
 }
 
-#[rocket::get("/students/<id>")]
+#[rocket::get("/<id>")]
 pub async fn view_student(id: i32, db: DbConn) -> Result<Value, Custom<Value>> {
   db.run(move |c| {
     StudentsRepository::find(c, id)
@@ -20,7 +20,7 @@ pub async fn view_student(id: i32, db: DbConn) -> Result<Value, Custom<Value>> {
   }).await
 }
 
-#[rocket::post("/students", format="json", data="<new_student>")]
+#[rocket::post("/", format="json", data="<new_student>")]
 pub async fn create_student(new_student: Json<NewStudent>, db: DbConn) -> Result<Custom<Value>, Custom<Value>> {
   db.run(move |c| {
     StudentsRepository::create(c, new_student.into_inner())
@@ -29,7 +29,7 @@ pub async fn create_student(new_student: Json<NewStudent>, db: DbConn) -> Result
   }).await
 }
 
-#[rocket::put("/students/<id>", format="json", data="<student>")]
+#[rocket::put("/<id>", format="json", data="<student>")]
 pub async fn update_student(id: i32, student: Json<Student>, db: DbConn) -> Result<Value, Custom<Value>> {
   db.run(move |c| {
     StudentsRepository::update(c, id, student.into_inner())
