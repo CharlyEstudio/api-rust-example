@@ -29,6 +29,15 @@ pub fn create_json_student() -> Value {
   })
 }
 
+pub fn equal_data_student(student: Value) -> Value {
+  json!({
+    "id": student["id"],
+    "name": "Foo bar",
+    "email": "foo@bar.com",
+    "created_at": student["created_at"],
+  })
+}
+
 pub fn create_test_presence(client: &Client) -> Value {
   let response = client
     .post(format!("{}/assists", APP_HOST))

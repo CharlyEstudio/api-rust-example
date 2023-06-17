@@ -1,5 +1,5 @@
 use reqwest::{blocking::Client, StatusCode};
-use rocket::serde::json::{serde_json::json, Value};
+use serde_json::Value;
 
 pub mod common;
 
@@ -74,10 +74,7 @@ fn test_update_presence() {
   // Test
   let response = client
     .put(format!("{}/assists/{}", common::APP_HOST, presence["id"]))
-    .json(&json!({
-      "students_id": 1,
-      "presence": "2023-06-18T09:22:22.731"
-    }))
+    .json(&common::equal_data_presence(presence))
     .send()
     .unwrap();
 

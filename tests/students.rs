@@ -12,7 +12,7 @@ fn test_get_students() {
 
   // Test
   let response = client
-    .get(format!("{}:8000/students", common::APP_HOST))
+    .get(format!("{}/students", common::APP_HOST))
     .send()
     .unwrap();
   assert_eq!(response.status(), StatusCode::OK);
@@ -90,12 +90,7 @@ fn test_update_student() {
 
   assert_eq!(response.status(), StatusCode::OK);
   let student: Value = response.json().unwrap();
-  assert_eq!(student, json!({
-    "id": student["id"],
-    "name": "Fooz bar",
-    "email": "fooz@bar.com",
-    "created_at": student["created_at"],
-  }));
+  assert_eq!(student, common::equal_data_student(student.clone()));
   
   // Cleanup
   common::delete_test_student(&client, student);
