@@ -17,6 +17,11 @@ async fn main() {
             routes::students::create_student,
             routes::students::update_student,
             routes::students::delete_student,
+            routes::assists::get_assists,
+            routes::assists::view_presence,
+            routes::assists::create_assist,
+            routes::assists::update_assist,
+            routes::assists::delete_assist,
         ])
         .attach(DbConn::fairing())
         .launch()

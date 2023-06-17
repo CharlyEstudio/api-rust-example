@@ -12,9 +12,9 @@ impl AssistsRepository {
     assists::table.limit(limit).load(c)
   }
 
-  pub fn create(c: &mut PgConnection, new_student: NewPresence) -> QueryResult<Assist> {
+  pub fn create(c: &mut PgConnection, new_presence: NewPresence) -> QueryResult<Assist> {
     diesel::insert_into(assists::table)
-      .values(new_student)
+      .values(new_presence)
       .get_result(c)
   }
 
