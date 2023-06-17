@@ -9,9 +9,9 @@ services:
       - POSTGRES_DB=app_db
     command: ["postgres", "-c", "log_statement=all"]
     volumes:
-      - ./:/var/lib/postgres
+      # - ./:/var/lib/postgres
       # Windows
-      # - C:\workspace\rust\basquet-server\postgres:/var/lib/postgres
+      - C:\workspace\rust\basquet-server\postgres:/var/lib/postgres
       # Linux / Mac
       # - ./postgres:/var/lib/postgres
   
@@ -22,6 +22,8 @@ services:
     build: .
     environment:
       - DATABASE_URL=postgres://postgres:postgres@postgres/app_db
+      - ROCKET_DATABASES={postgres={url=postgres://postgres:postgres@postgres/app_db}}
+      - ROCKET_ADDRESS=0.0.0.0
     ports:
       - 8000:8000
     volumes:
