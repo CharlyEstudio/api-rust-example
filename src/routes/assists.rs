@@ -39,7 +39,7 @@ pub async fn update_assist(id: i32, presence: Json<Assist>, db: DbConn) -> Resul
   }).await
 }
 
-#[rocket::delete("/assists/<id>")]
+#[rocket::delete("/<id>")]
 pub async fn delete_assist(id: i32, db: DbConn) -> Result<NoContent, Custom<Value>> {
   db.run(move |c| {
     AssistsRepository::delete(c, id)

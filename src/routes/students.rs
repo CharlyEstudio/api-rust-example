@@ -38,7 +38,7 @@ pub async fn update_student(id: i32, student: Json<Student>, db: DbConn) -> Resu
   }).await
 }
 
-#[rocket::delete("/students/<id>")]
+#[rocket::delete("/<id>")]
 pub async fn delete_student(id: i32, db: DbConn) -> Result<NoContent, Custom<Value>> {
   db.run(move |c| {
     StudentsRepository::delete(c, id)
