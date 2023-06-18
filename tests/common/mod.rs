@@ -38,10 +38,10 @@ pub fn equal_data_student(student: Value) -> Value {
   })
 }
 
-pub fn create_test_presence(client: &Client) -> Value {
+pub fn create_test_presence(client: &Client, student: Value) -> Value {
   let response = client
     .post(format!("{}/assists", APP_HOST))
-    .json(&create_json_presence())
+    .json(&create_json_presence(student))
     .send()
     .unwrap();
   assert_eq!(response.status(), StatusCode::CREATED);
@@ -57,17 +57,17 @@ pub fn delete_test_presence(client: &Client, presence: Value) {
     assert_eq!(response.status(), StatusCode::NO_CONTENT);
 }
 
-pub fn create_json_presence() -> Value {
+pub fn create_json_presence(student: Value) -> Value {
   json!({
-    "students_id": 1,
+    "students_id": student["id"],
     "presence": "2023-06-17T09:22:22.731"
   })
 }
 
-pub fn equal_data_presence(presence: Value) -> Value {
+pub fn equal_data_presence(presence: Value, student: Value) -> Value {
   json!({
     "id": presence["id"],
-    "students_id": 1,
+    "students_id": student["id"],
     "presence": "2023-06-17T09:22:22.731",
     "created_at": presence["created_at"],
   })
