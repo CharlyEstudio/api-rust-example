@@ -17,6 +17,9 @@ docker-compose exec app cargo run
 ## Execute Bin into folder src/bin/cli.rs
 docker-compose exec app cargo run --bin cli
 
+## Create user with CLI & Roles
+docker-compose exec app cargo run --bin cli users create admin_viewer 1234 admin,viewer
+
 ### Up Test
 docker-compose exec app cargo test
 
