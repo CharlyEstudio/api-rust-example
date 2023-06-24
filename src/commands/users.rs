@@ -24,7 +24,14 @@ pub fn create_user(username: String, password: String, roles_codes: Vec<String>)
   println!("Role assigned {:?}", roles);
 }
 
-pub fn list_user() {}
+pub fn list_user() {
+  let mut c = load_db_connection();
+
+  let users = UserRepository::find_with_roles(&mut c).unwrap();
+  for user in users {
+    println!("{:?}", user);
+  }
+}
 
 pub fn delete_user(id: i32) {
   let mut c = load_db_connection();

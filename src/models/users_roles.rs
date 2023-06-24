@@ -2,7 +2,7 @@ use diesel::{Queryable, Insertable, Associations, Identifiable};
 use crate::models::{users::User, roles::Role};
 use crate::schema::users_roles;
 
-#[derive(Queryable, Associations, Identifiable)]
+#[derive(Queryable, Associations, Identifiable, Debug)]
 #[diesel(belongs_to(User))]
 #[diesel(belongs_to(Role))]
 #[diesel(table_name=users_roles)]

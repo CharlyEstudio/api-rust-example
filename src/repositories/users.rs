@@ -2,8 +2,8 @@ use diesel::{PgConnection, QueryResult};
 use diesel::prelude::*;
 
 use crate::models::users_roles::{NewUserRole, UserRole};
-use crate::models::roles::NewRole;
-use crate::schema::users_roles;
+use crate::models::roles::{NewRole, Role};
+use crate::schema::{users_roles, roles};
 use crate::{models::users::{User, NewUser}, schema::users};
 
 use super::roles::RoleRepository;
@@ -13,6 +13,16 @@ pub struct UserRepository;
 impl UserRepository {
   pub fn _find(c: &mut PgConnection, id: i32) -> QueryResult<User> {
     users::table.find(id).get_result(c)
+  }
+
+  pub fn find_with_roles(c: &mut PgConnection) -> QueryResult<Vec<(User, Vec<(UserRole, Role)>)>> {
+    let users = users::table.load(c)?;
+    let result = users_roles::table
+      .inner_join(roles::table)
+      .load::<(UserRole, Role)>(c)?
+      .grouped_by(&users);
+    
+    Ok(users.into_iter().zip(result).collect())
   }
 
   pub fn _find_multiple(c: &mut PgConnection, limit: i64) -> QueryResult<Vec<User>> {
