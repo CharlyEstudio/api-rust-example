@@ -14,6 +14,9 @@ docker-compose exec app diesel migration revert
 ### Up App
 docker-compose exec app cargo run
 
+## Execute Bin into folder src/bin/cli.rs
+docker-compose exec app cargo run --bin cli
+
 ### Up Test
 docker-compose exec app cargo test
 

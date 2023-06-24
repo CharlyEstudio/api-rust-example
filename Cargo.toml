@@ -1,5 +1,7 @@
 [package]
-name = "basquet-server"
+name = "basquet"
+ # Sin esto, debe ejecutarse asi: docker-compose exec app cargo run --bin server
+default-run = "server"
 version = "0.1.0"
 edition = "2021"
 
@@ -13,6 +15,7 @@ serde_json = "1.0"
 diesel = {version = "2.0", features = ["postgres", "chrono"]}
 chrono = {version = "0.4", features = ["serde"]}
 log = "0.4"
+clap = "4.2"
 
 [dev-dependencies]
 reqwest = {version = "0.11", features = ["json", "blocking"]}
