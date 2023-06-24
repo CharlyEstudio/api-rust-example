@@ -21,3 +21,15 @@ impl NotFoundProps {
     Self { service, id, table }
   }
 }
+
+pub struct NotFoundUsernameProps {
+  pub service: String,
+  pub username: String,
+  pub table: String,
+}
+
+impl NotFoundUsernameProps {
+  pub fn new(service: String, username: &String, table: String) -> Self {
+    Self { service, username: username.to_string(), table }
+  }
+}

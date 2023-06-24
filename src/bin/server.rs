@@ -3,6 +3,9 @@ extern crate basquet;
 #[rocket::main]
 async fn main() {
     let _ = rocket::build()
+      .mount("/auth", rocket::routes![
+        basquet::routes::auth::login,
+      ])
       .mount("/students", rocket::routes![
         basquet::routes::students::get_students,
         basquet::routes::students::view_student,

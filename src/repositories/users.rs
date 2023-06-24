@@ -15,6 +15,10 @@ impl UserRepository {
     users::table.find(id).get_result(c)
   }
 
+  pub fn find_by_username(c: &mut PgConnection, username: &String) -> QueryResult<User> {
+    users::table.filter(users::username.eq(username)).first(c)
+  }
+
   pub fn find_with_roles(c: &mut PgConnection) -> QueryResult<Vec<(User, Vec<(UserRole, Role)>)>> {
     let users = users::table.load(c)?;
     let result = users_roles::table
