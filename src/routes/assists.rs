@@ -1,8 +1,8 @@
 use rocket::{serde::json::{Value, serde_json::json, Json}, response::status::{Custom, NoContent}, http::Status};
 
-use crate::{repositories::assists::AssistsRepository, models::{assists::{NewPresence, Assist}, props::ServerErrorProps}, routes::DbConn};
+use crate::{repositories::assists::AssistsRepository, models::{assists::{NewPresence, Assist}, props::{ServerErrorProps, NotFoundProps}}, routes::DbConn};
 
-use super::server_error;
+use super::{server_error, not_found};
 
 #[rocket::get("/")]
 pub async fn get_assists(db: DbConn) -> Result<Value, Custom<Value>> {
@@ -22,8 +22,8 @@ pub async fn view_presence(id: i32, db: DbConn) -> Result<Value, Custom<Value>> 
     AssistsRepository::find(c, id)
       .map(|presence| json!(presence))
       .map_err(|e| {
-        let params: ServerErrorProps = ServerErrorProps::new("view_presence".to_string(), id, "assists".to_string());
-        server_error(e.into(), params)
+        let params: NotFoundProps = NotFoundProps::new("view_presence".to_string(), id, "assists".to_string());
+        not_found(e.into(), params)
       })
   }).await
 }
