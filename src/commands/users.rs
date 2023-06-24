@@ -26,4 +26,8 @@ pub fn create_user(username: String, password: String, roles_codes: Vec<String>)
 
 pub fn list_user() {}
 
-pub fn delete_user(id: i32) {}
+pub fn delete_user(id: i32) {
+  let mut c = load_db_connection();
+
+  UserRepository::delete(&mut c, id).unwrap();
+}

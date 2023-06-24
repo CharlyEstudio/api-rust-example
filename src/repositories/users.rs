@@ -52,7 +52,10 @@ impl UserRepository {
       .get_result(c)
   }
 
-  pub fn _delete(c: &mut PgConnection, id: i32) -> QueryResult<usize> {
+  pub fn delete(c: &mut PgConnection, id: i32) -> QueryResult<usize> {
+    diesel::delete(
+      users_roles::table.filter(users_roles::user_id.eq(id))
+    ).execute(c)?;
     diesel::delete(users::table.find(id)).execute(c)
   }
 }
