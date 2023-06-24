@@ -1,13 +1,18 @@
 use rocket::{serde::json::{Json, serde_json::json, Value}, response::status::{Custom, NoContent}, http::Status};
 
-use crate::{models::students::{NewStudent, Student}, repositories::students::StudentsRepository, routes::DbConn};
+use crate::{models::{students::{NewStudent, Student}, props::ServerErrorProps}, repositories::students::StudentsRepository, routes::DbConn};
+
+use super::server_error;
 
 #[rocket::get("/")]
 pub async fn get_students(db: DbConn) -> Result<Value, Custom<Value>> {
   db.run(|c| {
     StudentsRepository::find_multiple(c, 100)
       .map(|student| json!(student))
-      .map_err(|_| Custom(Status::InternalServerError, json!("Error")))
+      .map_err(|e| {
+        let params: ServerErrorProps = ServerErrorProps::new("get_students".to_string(), 0, "students".to_string());
+        server_error(e.into(), params)
+      })
   }).await
 }
 
@@ -16,7 +21,10 @@ pub async fn view_student(id: i32, db: DbConn) -> Result<Value, Custom<Value>> {
   db.run(move |c| {
     StudentsRepository::find(c, id)
       .map(|student| json!(student))
-      .map_err(|_| Custom(Status::InternalServerError, json!("Error")))
+      .map_err(|e| {
+        let params: ServerErrorProps = ServerErrorProps::new("view_student".to_string(), id, "students".to_string());
+        server_error(e.into(), params)
+      })
   }).await
 }
 
@@ -25,7 +33,10 @@ pub async fn create_student(new_student: Json<NewStudent>, db: DbConn) -> Result
   db.run(move |c| {
     StudentsRepository::create(c, new_student.into_inner())
       .map(|student| Custom(Status::Created, json!(student)))
-      .map_err(|_| Custom(Status::InternalServerError, json!("Error")))
+      .map_err(|e| {
+        let params: ServerErrorProps = ServerErrorProps::new("create_student".to_string(), 0, "students".to_string());
+        server_error(e.into(), params)
+      })
   }).await
 }
 
@@ -34,7 +45,10 @@ pub async fn update_student(id: i32, student: Json<Student>, db: DbConn) -> Resu
   db.run(move |c| {
     StudentsRepository::update(c, id, student.into_inner())
       .map(|student| json!(student))
-      .map_err(|_| Custom(Status::InternalServerError, json!("Error")))
+      .map_err(|e| {
+        let params: ServerErrorProps = ServerErrorProps::new("update_student".to_string(), id, "students".to_string());
+        server_error(e.into(), params)
+      })
   }).await
 }
 
@@ -43,6 +57,9 @@ pub async fn delete_student(id: i32, db: DbConn) -> Result<NoContent, Custom<Val
   db.run(move |c| {
     StudentsRepository::delete(c, id)
       .map(|_| NoContent)
-      .map_err(|_| Custom(Status::InternalServerError, json!("Error")))
+      .map_err(|e| {
+        let params: ServerErrorProps = ServerErrorProps::new("delete_student".to_string(), id, "students".to_string());
+        server_error(e.into(), params)
+      })
   }).await
 }
