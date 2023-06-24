@@ -73,6 +73,20 @@ fn test_view_presence() {
 }
 
 #[test]
+fn test_view_presence_not_found() {
+  // Setup
+  let client = Client::new();
+
+  // Test
+  let response: reqwest::blocking::Response = client
+    .get(format!("{}/assists/{}", common::APP_HOST, 100000000))
+    .send()
+    .unwrap();
+
+  assert_eq!(response.status(), StatusCode::NOT_FOUND);
+}
+
+#[test]
 fn test_update_presence() {
   // Setup
   let client = Client::new();

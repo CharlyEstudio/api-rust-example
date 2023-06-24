@@ -76,6 +76,20 @@ fn test_view_student() {
 }
 
 #[test]
+fn test_view_student_not_found() {
+  // Setup
+  let client = Client::new();
+
+  // Test
+  let response = client
+    .get(format!("{}/students/{}", common::APP_HOST, 100000000))
+    .send()
+    .unwrap();
+
+  assert_eq!(response.status(), StatusCode::NOT_FOUND);
+}
+
+#[test]
 fn test_update_student() {
   // Setup
   let client = Client::new();
