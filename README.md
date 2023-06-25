@@ -32,6 +32,7 @@ $ docker-compose exec app cargo run --bin cli users delete <id>
 
 ### Up Test
 docker-compose exec app cargo test
+docker-compose exec app cargo test <name_test_function>
 
 ### Create Doc & Open
 docker-compose exec app cargo doc

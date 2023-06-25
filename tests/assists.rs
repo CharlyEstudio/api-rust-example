@@ -1,4 +1,4 @@
-use reqwest::StatusCode;
+use reqwest::{StatusCode, blocking::Client};
 use serde_json::Value;
 
 pub mod common;
@@ -26,6 +26,19 @@ fn test_get_assists() {
   common::delete_test_presence(&client, presence1);
   common::delete_test_presence(&client, presence2);
   common::delete_test_student(&client, student);
+}
+
+#[test]
+fn test_get_assists_not_authorized() {
+  // Setup
+  let client = Client::new();
+
+  // Test
+  let response = client
+    .get(format!("{}/assists", common::APP_HOST))
+    .send()
+    .unwrap();
+  assert_eq!(response.status(), StatusCode::UNAUTHORIZED);
 }
 
 #[test]
