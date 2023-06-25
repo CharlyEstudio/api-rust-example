@@ -20,8 +20,16 @@ pub async fn view_presence(id: i32, db: DbConn) -> Result<Value, Custom<Value>> 
     AssistsRepository::find(c, id)
       .map(|presence| json!(presence))
       .map_err(|e| {
-        let params: NotFoundProps = NotFoundProps::new("view_presence".to_string(), id, "assists".to_string());
-        not_found(e.into(), params)
+        match e {
+          diesel::result::Error::NotFound => {
+            let params: NotFoundProps = NotFoundProps::new("view_presence".to_string(), id, "assists".to_string());
+            not_found(e.into(), params)
+          },
+          _ => {
+            let params: ServerErrorProps = ServerErrorProps::new("view_presence".to_string(), 0, "assists".to_string());
+            server_error(e.into(), params)
+          }
+        }
       })
   }).await
 }

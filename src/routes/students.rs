@@ -21,8 +21,16 @@ pub async fn view_student(id: i32, db: DbConn) -> Result<Value, Custom<Value>> {
     StudentsRepository::find(c, id)
       .map(|student| json!(student))
       .map_err(|e| {
-        let params: NotFoundProps = NotFoundProps::new("view_student".to_string(), id, "students".to_string());
-        not_found(e.into(), params)
+        match e {
+          diesel::result::Error::NotFound => {
+            let params: NotFoundProps = NotFoundProps::new("view_student".to_string(), id, "students".to_string());
+            not_found(e.into(), params)
+          },
+          _ => {
+            let params: ServerErrorProps = ServerErrorProps::new("view_student".to_string(), 0, "students".to_string());
+            server_error(e.into(), params)
+          }
+        }
       })
   }).await
 }

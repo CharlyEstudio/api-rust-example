@@ -1,6 +1,6 @@
 use rocket::{serde::json::{Json, serde_json::json, Value}, response::status::{Custom, NoContent}, http::Status};
 
-use crate::{repositories::{users::UserRepository, auth::AuthRepository}, models::{users::{NewUser, User}, props::ServerErrorProps}, functions::responses::server_error};
+use crate::{repositories::{users::UserRepository, auth::AuthRepository}, models::{users::{NewUser, User}, props::{ServerErrorProps, NotFoundProps}}, functions::responses::{server_error, not_found}};
 
 use super::DbConn;
 
@@ -22,8 +22,16 @@ pub async fn view_user(id: i32, db: DbConn) -> Result<Value, Custom<Value>> {
     UserRepository::find(c, id)
     .map(|users| json!(users))
     .map_err(|e| {
-      let params: ServerErrorProps = ServerErrorProps::new("view_user".to_string(), 0, "users".to_string());
-      server_error(e.into(), params)
+      match e {
+        diesel::result::Error::NotFound => {
+          let params: NotFoundProps = NotFoundProps::new("login".to_string(), id, "user".to_string());
+          not_found(e.into(), params)
+        },
+        _ => {
+          let params: ServerErrorProps = ServerErrorProps::new("view_user".to_string(), 0, "users".to_string());
+          server_error(e.into(), params)
+        }
+      }
     })
   }).await
 }
