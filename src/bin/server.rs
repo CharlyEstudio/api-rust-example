@@ -1,5 +1,7 @@
 extern crate basquet;
 
+use rocket_db_pools::Database;
+
 #[rocket::main]
 async fn main() {
     let _ = rocket::build()
@@ -28,6 +30,7 @@ async fn main() {
         basquet::routes::assists::delete_assist,
       ])
       .attach(basquet::routes::DbConn::fairing())
+      .attach(basquet::routes::CacheConn::init())
       .launch()
       .await;
 }

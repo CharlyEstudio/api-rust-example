@@ -1,11 +1,12 @@
 use rocket::{serde::json::{Json, serde_json::json, Value}, response::status::Custom, http::Status};
+use rocket_db_pools::Connection;
 
 use crate::{models::{auth::Credentials, props::UnAuthorixedProps}, repositories::auth::AuthRepository, functions::responses::unauthorized};
 
-use super::DbConn;
+use super::{DbConn, CacheConn};
 
 #[rocket::post("/login", format="json", data="<credentials>")]
-pub async fn login(credentials: Json<Credentials>, db: DbConn) -> Result<Custom<Value>, Custom<Value>> {
+pub async fn login(credentials: Json<Credentials>, db: DbConn, cache: Connection<CacheConn>) -> Result<Custom<Value>, Custom<Value>> {
   db.run(move |c| {
     let cred = credentials.clone();
 
