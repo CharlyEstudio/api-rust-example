@@ -1,6 +1,6 @@
 use rocket::{serde::json::{Json, serde_json::json, Value}, response::status::Custom, http::Status};
 
-use crate::{models::{auth::Credentials, props::NotFoundUsernameProps}, repositories::auth::AuthRepository, functions::responses::not_found_user};
+use crate::{models::{auth::Credentials, props::UnAuthorixedProps}, repositories::auth::AuthRepository, functions::responses::unauthorized};
 
 use super::DbConn;
 
@@ -18,8 +18,8 @@ pub async fn login(credentials: Json<Credentials>, db: DbConn) -> Result<Custom<
         Custom(Status::Unauthorized, json!("Unauthorized"))
       })
       .map_err(|e| {
-        let params: NotFoundUsernameProps = NotFoundUsernameProps::new("login".to_string(), &cred.username, "users".to_string());
-        not_found_user(e.into(), params)
+        let params: UnAuthorixedProps = UnAuthorixedProps::new("login".to_string(), &cred.username);
+        unauthorized(e.into(), params)
       })
   }).await
 }

@@ -33,3 +33,14 @@ impl NotFoundUsernameProps {
     Self { service, username: username.to_string(), table }
   }
 }
+
+pub struct UnAuthorixedProps {
+  pub service: String,
+  pub username: String,
+}
+
+impl UnAuthorixedProps {
+  pub fn new(service: String, username: &String) -> Self {
+    Self { service, username: username.to_string() }
+  }
+}
