@@ -1,10 +1,10 @@
 use rocket::{serde::json::{Json, serde_json::json, Value}, response::status::{Custom, NoContent}, http::Status};
 
-use crate::{models::{students::{NewStudent, Student}, props::{ServerErrorProps, NotFoundProps}}, repositories::students::StudentsRepository, routes::DbConn, functions::responses::{server_error, not_found}};
+use crate::{models::{students::{NewStudent, Student}, props::{ServerErrorProps, NotFoundProps}, users::User}, repositories::students::StudentsRepository, routes::DbConn, functions::responses::{server_error, not_found}};
 
 
 #[rocket::get("/")]
-pub async fn get_students(db: DbConn) -> Result<Value, Custom<Value>> {
+pub async fn get_students(db: DbConn, _user: User) -> Result<Value, Custom<Value>> {
   db.run(|c| {
     StudentsRepository::find_multiple(c, 100)
       .map(|student| json!(student))
@@ -16,7 +16,7 @@ pub async fn get_students(db: DbConn) -> Result<Value, Custom<Value>> {
 }
 
 #[rocket::get("/<id>")]
-pub async fn view_student(id: i32, db: DbConn) -> Result<Value, Custom<Value>> {
+pub async fn view_student(id: i32, db: DbConn, _user: User) -> Result<Value, Custom<Value>> {
   db.run(move |c| {
     StudentsRepository::find(c, id)
       .map(|student| json!(student))
@@ -36,7 +36,7 @@ pub async fn view_student(id: i32, db: DbConn) -> Result<Value, Custom<Value>> {
 }
 
 #[rocket::post("/", format="json", data="<new_student>")]
-pub async fn create_student(new_student: Json<NewStudent>, db: DbConn) -> Result<Custom<Value>, Custom<Value>> {
+pub async fn create_student(new_student: Json<NewStudent>, db: DbConn, _user: User) -> Result<Custom<Value>, Custom<Value>> {
   db.run(move |c| {
     StudentsRepository::create(c, new_student.into_inner())
       .map(|student| Custom(Status::Created, json!(student)))
@@ -48,7 +48,7 @@ pub async fn create_student(new_student: Json<NewStudent>, db: DbConn) -> Result
 }
 
 #[rocket::put("/<id>", format="json", data="<student>")]
-pub async fn update_student(id: i32, student: Json<Student>, db: DbConn) -> Result<Value, Custom<Value>> {
+pub async fn update_student(id: i32, student: Json<Student>, db: DbConn, _user: User) -> Result<Value, Custom<Value>> {
   db.run(move |c| {
     StudentsRepository::update(c, id, student.into_inner())
       .map(|student| json!(student))
@@ -60,7 +60,7 @@ pub async fn update_student(id: i32, student: Json<Student>, db: DbConn) -> Resu
 }
 
 #[rocket::delete("/<id>")]
-pub async fn delete_student(id: i32, db: DbConn) -> Result<NoContent, Custom<Value>> {
+pub async fn delete_student(id: i32, db: DbConn, _user: User) -> Result<NoContent, Custom<Value>> {
   db.run(move |c| {
     StudentsRepository::delete(c, id)
       .map(|_| NoContent)

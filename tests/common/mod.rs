@@ -1,4 +1,6 @@
-use reqwest::{blocking::Client, StatusCode};
+use std::process::Command;
+
+use reqwest::{blocking::{Client, ClientBuilder}, StatusCode, header::{HeaderMap, self, HeaderValue}};
 use serde_json::{json, Value};
 
 pub static APP_HOST: &'static str = "http://localhost:8000";
@@ -71,4 +73,43 @@ pub fn equal_data_presence(presence: Value, student: Value) -> Value {
     "presence": "2023-06-17T09:22:22.731",
     "created_at": presence["created_at"],
   })
+}
+
+pub fn get_client_with_logged_in_admin() -> Client {
+  let output = Command::new("cargo")
+    .arg("run")
+    .arg("--bin")
+    .arg("cli")
+    .arg("users")
+    .arg("create")
+    .arg("test_admin")
+    .arg("1234")
+    .arg("admin")
+    .output()
+    .unwrap();
+
+  println!("{:?}", output);
+  let client = Client::new();
+
+  let response = client
+    .post(format!("{}/auth/login", APP_HOST))
+    .json(&json!({
+      "username": "test_admin",
+      "password": "1234",
+    }))
+    .send()
+    .unwrap();
+
+  assert_eq!(response.status(), StatusCode::OK);
+  let json: Value = response.json().unwrap();
+  assert!(json.get("token").is_some());
+
+  let header_value = format!("Bearer {}", json["token"].as_str().unwrap());
+  let mut headers = HeaderMap::new();
+  headers.insert(
+    header::AUTHORIZATION,
+    HeaderValue::from_str(&header_value).unwrap()
+  );
+
+  ClientBuilder::new().default_headers(headers).build().unwrap()
 }

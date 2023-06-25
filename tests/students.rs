@@ -1,4 +1,4 @@
-use reqwest::{blocking::Client, StatusCode};
+use reqwest::StatusCode;
 use serde_json::{json, Value};
 
 pub mod common;
@@ -6,7 +6,7 @@ pub mod common;
 #[test]
 fn test_get_students() {
   // Setup
-  let client = Client::new();
+  let client = common::get_client_with_logged_in_admin();
   let student1 = common::create_test_student(&client);
   let student2 = common::create_test_student(&client);
 
@@ -29,7 +29,7 @@ fn test_get_students() {
 #[test]
 fn test_create_student() {
   // Setup
-  let client = Client::new();
+  let client = common::get_client_with_logged_in_admin();
   let response = client
     .post(format!("{}/students", common::APP_HOST))
     .json(&common::create_json_student())
@@ -53,7 +53,7 @@ fn test_create_student() {
 #[test]
 fn test_view_student() {
   // Setup
-  let client = Client::new();
+  let client = common::get_client_with_logged_in_admin();
   let student: Value = common::create_test_student(&client);
 
   // Test
@@ -78,7 +78,7 @@ fn test_view_student() {
 #[test]
 fn test_view_student_not_found() {
   // Setup
-  let client = Client::new();
+  let client = common::get_client_with_logged_in_admin();
 
   // Test
   let response = client
@@ -92,7 +92,7 @@ fn test_view_student_not_found() {
 #[test]
 fn test_update_student() {
   // Setup
-  let client = Client::new();
+  let client = common::get_client_with_logged_in_admin();
   let student: Value = common::create_test_student(&client);
 
   // Test
@@ -112,7 +112,7 @@ fn test_update_student() {
 
 #[test]
 fn test_delete_student() {
-  let client = Client::new();
+  let client = common::get_client_with_logged_in_admin();
   let student: Value = common::create_test_student(&client);
 
   let response = client

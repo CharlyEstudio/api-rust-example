@@ -1,4 +1,4 @@
-use reqwest::{blocking::Client, StatusCode};
+use reqwest::StatusCode;
 use serde_json::Value;
 
 pub mod common;
@@ -6,7 +6,7 @@ pub mod common;
 #[test]
 fn test_get_assists() {
   // Setup
-  let client = Client::new();
+  let client = common::get_client_with_logged_in_admin();
   let student = common::create_test_student(&client.clone());
   let presence1 = common::create_test_presence(&client, student.clone());
   let presence2 = common::create_test_presence(&client, student.clone());
@@ -31,7 +31,7 @@ fn test_get_assists() {
 #[test]
 fn test_create_presence() {
   // Setup
-  let client = Client::new();
+  let client = common::get_client_with_logged_in_admin();
 
   // Test
   let student = common::create_test_student(&client);
@@ -53,7 +53,7 @@ fn test_create_presence() {
 #[test]
 fn test_view_presence() {
   // Setup
-  let client = Client::new();
+  let client = common::get_client_with_logged_in_admin();
   let student = common::create_test_student(&client.clone());
   let presence: Value = common::create_test_presence(&client, student.clone());
 
@@ -75,7 +75,7 @@ fn test_view_presence() {
 #[test]
 fn test_view_presence_not_found() {
   // Setup
-  let client = Client::new();
+  let client = common::get_client_with_logged_in_admin();
 
   // Test
   let response: reqwest::blocking::Response = client
@@ -89,7 +89,7 @@ fn test_view_presence_not_found() {
 #[test]
 fn test_update_presence() {
   // Setup
-  let client = Client::new();
+  let client = common::get_client_with_logged_in_admin();
   let student = common::create_test_student(&client.clone());
   let presence: Value = common::create_test_presence(&client, student.clone());
 
@@ -111,7 +111,7 @@ fn test_update_presence() {
 
 #[test]
 fn test_delete_presence() {
-  let client = Client::new();
+  let client = common::get_client_with_logged_in_admin();
   let student = common::create_test_student(&client.clone());
   let presence: Value = common::create_test_presence(&client, student.clone());
 

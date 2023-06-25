@@ -5,7 +5,7 @@ use crate::{repositories::{users::UserRepository, auth::AuthRepository}, models:
 use super::DbConn;
 
 #[rocket::get("/")]
-pub async fn get_users(db: DbConn) -> Result<Value, Custom<Value>> {
+pub async fn get_users(db: DbConn, _user: User) -> Result<Value, Custom<Value>> {
   db.run(|c| {
     UserRepository::find_multiple(c, 10)
     .map(|users| json!(users))
@@ -17,7 +17,7 @@ pub async fn get_users(db: DbConn) -> Result<Value, Custom<Value>> {
 }
 
 #[rocket::get("/<id>")]
-pub async fn view_user(id: i32, db: DbConn) -> Result<Value, Custom<Value>> {
+pub async fn view_user(id: i32, db: DbConn, _user: User) -> Result<Value, Custom<Value>> {
   db.run(move |c| {
     UserRepository::find(c, id)
     .map(|users| json!(users))
@@ -37,7 +37,7 @@ pub async fn view_user(id: i32, db: DbConn) -> Result<Value, Custom<Value>> {
 }
 
 #[rocket::post("/", format="json", data="<new_user>")]
-pub async fn create_user(new_user: Json<NewUser>, db: DbConn) -> Result<Custom<Value>, Custom<Value>> {
+pub async fn create_user(new_user: Json<NewUser>, db: DbConn, _user: User) -> Result<Custom<Value>, Custom<Value>> {
   db.run(move |c| {
     let password = new_user.clone().into_inner().password;
     let username = new_user.clone().into_inner().username;
@@ -55,7 +55,7 @@ pub async fn create_user(new_user: Json<NewUser>, db: DbConn) -> Result<Custom<V
 }
 
 #[rocket::put("/<id>", format="json", data="<user>")]
-pub async fn update_user(id: i32, user: Json<User>, db: DbConn) -> Result<Value, Custom<Value>> {
+pub async fn update_user(id: i32, user: Json<User>, db: DbConn, _user: User) -> Result<Value, Custom<Value>> {
   db.run(move |c| {
     let password = user.clone().into_inner().password;
     let username = user.clone().into_inner().username;
@@ -72,7 +72,7 @@ pub async fn update_user(id: i32, user: Json<User>, db: DbConn) -> Result<Value,
 }
 
 #[rocket::delete("/<id>")]
-pub async fn delete_user(id: i32, db: DbConn) -> Result<NoContent, Custom<Value>> {
+pub async fn delete_user(id: i32, db: DbConn, _user: User) -> Result<NoContent, Custom<Value>> {
   db.run(move |c| {
     UserRepository::delete(c, id)
       .map(|_| NoContent)
