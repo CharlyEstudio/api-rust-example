@@ -50,6 +50,13 @@ async fn main() {
         basquet::routes::users::update_user,
         basquet::routes::users::delete_user,
       ])
+      .mount("/type-payments", rocket::routes![
+        basquet::routes::type_payments::get_type_payments,
+        basquet::routes::type_payments::view_type_payment,
+        basquet::routes::type_payments::create_type_payment,
+        basquet::routes::type_payments::update_type_payment,
+        basquet::routes::type_payments::delete_type_payment,
+      ])
       .attach(basquet::routes::DbConn::fairing())
       .attach(basquet::routes::CacheConn::init())
       .launch()

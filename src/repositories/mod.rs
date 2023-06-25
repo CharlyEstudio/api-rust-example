@@ -6,3 +6,4 @@ pub mod roles;
 pub mod people;
 pub mod categories;
 pub mod payments;
+pub mod type_payments;
