@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS students (
   id SERIAL PRIMARY KEY,
-  name VARCHAR NOT NULL,
-  email VARCHAR NOT NULL,
+  person_id integer NOT NULL REFERENCES people(id),
+  category_id integer NOT NULL REFERENCES categories(id),
   created_at TIMESTAMP DEFAULT NOW() NOT NULL
 )

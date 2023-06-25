@@ -1,0 +1,5 @@
+CREATE TABLE IF NOT EXISTS type_payments (
+  id SERIAL PRIMARY KEY,
+  type_payment VARCHAR(80) NOT NULL UNIQUE,
+  created_at TIMESTAMP DEFAULT NOW() NOT NULL
+)

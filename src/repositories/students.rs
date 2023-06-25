@@ -21,8 +21,8 @@ impl StudentsRepository {
   pub fn update(c: &mut PgConnection, id: i32, student: Student) -> QueryResult<Student> {
     diesel::update(students::table.find(id))
       .set((
-        students::name.eq(student.name),
-        students::email.eq(student.email),
+        students::person_id.eq(student.person_id),
+        students::category_id.eq(student.category_id),
       ))
       .get_result(c)
   }

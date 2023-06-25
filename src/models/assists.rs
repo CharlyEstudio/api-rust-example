@@ -8,7 +8,7 @@ pub struct Assist {
   #[serde(skip_deserializing)]
   pub id: i32,
   pub students_id: i32,
-  pub presence: Option<NaiveDateTime>,
+  pub presence: Option<bool>,
   #[serde(skip_deserializing)]
   pub created_at: NaiveDateTime,
 }
@@ -17,5 +17,5 @@ pub struct Assist {
 #[diesel(table_name=assists)]
 pub struct NewPresence {
   pub students_id: i32,
-  pub presence: Option<NaiveDateTime>,
+  pub presence: Option<bool>,
 }

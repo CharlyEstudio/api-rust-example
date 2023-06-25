@@ -14,7 +14,7 @@ pub fn create_user(username: String, password: String, roles_codes: Vec<String>)
 
   let password_hash = AuthRepository::hash_password(password).unwrap();
 
-  let new_user = NewUser {username, password: password_hash};
+  let new_user = NewUser {username, password: password_hash, active: Some(true)};
   let user = UserRepository::create(&mut c, new_user, roles_codes).unwrap();
   println!("User created {:?}", user);
   let roles = RoleRepository::find_by_user(&mut c, &user).unwrap();

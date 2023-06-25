@@ -7,8 +7,8 @@ use crate::schema::students;
 pub struct Student {
   #[serde(skip_deserializing)]
   pub id: i32,
-  pub name: String,
-  pub email: String,
+  pub person_id: i32,
+  pub category_id: i32,
   #[serde(skip_deserializing)]
   pub created_at: NaiveDateTime,
 }
@@ -16,6 +16,6 @@ pub struct Student {
 #[derive(Insertable, Deserialize)]
 #[diesel(table_name=students)]
 pub struct  NewStudent {
-  pub name: String,
-  pub email: String,
+  pub person_id: i32,
+  pub category_id: i32,
 }

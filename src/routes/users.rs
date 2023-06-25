@@ -42,7 +42,7 @@ pub async fn create_user(new_user: Json<NewUser>, db: DbConn, _user: User) -> Re
     let password = new_user.clone().into_inner().password;
     let username = new_user.clone().into_inner().username;
     let password_hash = AuthRepository::hash_password(password).unwrap();
-    let new_user_hash = NewUser {username: username.clone(), password: password_hash};
+    let new_user_hash = NewUser {username: username.clone(), password: password_hash, active: Some(true)};
     let role_code = vec!["student".to_string()];
 
     UserRepository::create(c, new_user_hash, role_code)
@@ -60,7 +60,7 @@ pub async fn update_user(id: i32, user: Json<User>, db: DbConn, _user: User) -> 
     let password = user.clone().into_inner().password;
     let username = user.clone().into_inner().username;
     let password_hash = AuthRepository::hash_password(password).unwrap();
-    let update_user_hash = User {id: user.id, username, password: password_hash, created_at: user.created_at};
+    let update_user_hash = User {id: user.id, username, password: password_hash, active: user.active, created_at: user.created_at};
 
     UserRepository::update(c, id, update_user_hash)
     .map(|users| json!(users))
