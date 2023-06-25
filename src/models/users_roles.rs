@@ -1,8 +1,9 @@
 use diesel::{Queryable, Insertable, Associations, Identifiable};
+use serde::Serialize;
 use crate::models::{users::User, roles::Role};
 use crate::schema::users_roles;
 
-#[derive(Queryable, Associations, Identifiable, Debug)]
+#[derive(Queryable, Associations, Identifiable, Debug, Serialize)]
 #[diesel(belongs_to(User))]
 #[diesel(belongs_to(Role))]
 #[diesel(table_name=users_roles)]

@@ -11,7 +11,7 @@ use super::roles::RoleRepository;
 pub struct UserRepository;
 
 impl UserRepository {
-  pub fn _find(c: &mut PgConnection, id: i32) -> QueryResult<User> {
+  pub fn find(c: &mut PgConnection, id: i32) -> QueryResult<User> {
     users::table.find(id).get_result(c)
   }
 
@@ -29,7 +29,7 @@ impl UserRepository {
     Ok(users.into_iter().zip(result).collect())
   }
 
-  pub fn _find_multiple(c: &mut PgConnection, limit: i64) -> QueryResult<Vec<User>> {
+  pub fn find_multiple(c: &mut PgConnection, limit: i64) -> QueryResult<Vec<User>> {
     users::table.limit(limit).load(c)
   }
 
@@ -57,7 +57,7 @@ impl UserRepository {
     Ok(user)
   }
 
-  pub fn _update(c: &mut PgConnection, id: i32, user: User) -> QueryResult<User> {
+  pub fn update(c: &mut PgConnection, id: i32, user: User) -> QueryResult<User> {
     diesel::update(users::table.find(id))
       .set((
         users::username.eq(user.username),

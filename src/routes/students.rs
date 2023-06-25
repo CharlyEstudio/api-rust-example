@@ -1,8 +1,7 @@
 use rocket::{serde::json::{Json, serde_json::json, Value}, response::status::{Custom, NoContent}, http::Status};
 
-use crate::{models::{students::{NewStudent, Student}, props::{ServerErrorProps, NotFoundProps}}, repositories::students::StudentsRepository, routes::DbConn};
+use crate::{models::{students::{NewStudent, Student}, props::{ServerErrorProps, NotFoundProps}}, repositories::students::StudentsRepository, routes::DbConn, functions::responses::{server_error, not_found}};
 
-use super::{server_error, not_found};
 
 #[rocket::get("/")]
 pub async fn get_students(db: DbConn) -> Result<Value, Custom<Value>> {

@@ -6,6 +6,13 @@ async fn main() {
       .mount("/auth", rocket::routes![
         basquet::routes::auth::login,
       ])
+      .mount("/users", rocket::routes![
+        basquet::routes::users::get_users,
+        basquet::routes::users::view_user,
+        basquet::routes::users::create_user,
+        basquet::routes::users::update_user,
+        basquet::routes::users::delete_user,
+      ])
       .mount("/students", rocket::routes![
         basquet::routes::students::get_students,
         basquet::routes::students::view_student,
