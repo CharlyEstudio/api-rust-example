@@ -15,6 +15,13 @@ async fn main() {
         basquet::routes::users::update_user,
         basquet::routes::users::delete_user,
       ])
+      .mount("/people", rocket::routes![
+        basquet::routes::people::get_people,
+        basquet::routes::people::view_person,
+        basquet::routes::people::create_person,
+        basquet::routes::people::update_person,
+        basquet::routes::people::delete_person,
+      ])
       .mount("/students", rocket::routes![
         basquet::routes::students::get_students,
         basquet::routes::students::view_student,
