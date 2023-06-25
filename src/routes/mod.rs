@@ -3,6 +3,7 @@ pub mod users;
 pub mod students;
 pub mod assists;
 pub mod people;
+pub mod categories;
 
 use diesel::PgConnection;
 use rocket_db_pools::{deadpool_redis, Database};

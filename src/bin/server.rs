@@ -5,8 +5,22 @@ use rocket_db_pools::Database;
 #[rocket::main]
 async fn main() {
     let _ = rocket::build()
+      .mount("/assists", rocket::routes![
+        basquet::routes::assists::get_assists,
+        basquet::routes::assists::view_presence,
+        basquet::routes::assists::create_assist,
+        basquet::routes::assists::update_assist,
+        basquet::routes::assists::delete_assist,
+      ])
       .mount("/auth", rocket::routes![
         basquet::routes::auth::login,
+      ])
+      .mount("/categories", rocket::routes![
+        basquet::routes::categories::get_categories,
+        basquet::routes::categories::view_category,
+        basquet::routes::categories::create_category,
+        basquet::routes::categories::update_category,
+        basquet::routes::categories::delete_category,
       ])
       .mount("/users", rocket::routes![
         basquet::routes::users::get_users,
@@ -28,13 +42,6 @@ async fn main() {
         basquet::routes::students::create_student,
         basquet::routes::students::update_student,
         basquet::routes::students::delete_student,
-      ])
-      .mount("/assists", rocket::routes![
-        basquet::routes::assists::get_assists,
-        basquet::routes::assists::view_presence,
-        basquet::routes::assists::create_assist,
-        basquet::routes::assists::update_assist,
-        basquet::routes::assists::delete_assist,
       ])
       .attach(basquet::routes::DbConn::fairing())
       .attach(basquet::routes::CacheConn::init())

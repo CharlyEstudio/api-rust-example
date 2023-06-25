@@ -4,3 +4,4 @@ pub mod assists;
 pub mod users;
 pub mod roles;
 pub mod people;
+pub mod categories;
