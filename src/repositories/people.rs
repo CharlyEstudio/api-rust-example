@@ -8,6 +8,14 @@ impl PersonRepository {
     people::table.find(id).get_result(c)
   }
 
+  pub fn find_by_user(c: &mut PgConnection, id: i32) -> QueryResult<Person> {
+    people::table.filter(people::user_id.eq(id)).first(c)
+  }
+
+  pub fn find_parents(c: &mut PgConnection, id: i32) -> QueryResult<Vec<Person>> {
+    people::table.filter(people::parent_id.eq(id)).load(c)
+  }
+
   pub fn find_multiple(c: &mut PgConnection, limit: i64) -> QueryResult<Vec<Person>> {
     people::table.limit(limit).load(c)
   }

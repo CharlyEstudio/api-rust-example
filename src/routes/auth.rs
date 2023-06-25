@@ -1,7 +1,7 @@
 use rocket::{serde::json::{Json, serde_json::json, Value}, response::status::Custom, http::Status};
 use rocket_db_pools::{Connection, deadpool_redis::redis::AsyncCommands};
 
-use crate::{models::{auth::Credentials, props::{UnAuthorixedProps, ServerErrorProps}}, repositories::{auth::AuthRepository, roles::RoleRepository}, functions::responses::{unauthorized, server_error}, commands::users::load_db_connection};
+use crate::{models::{auth::Credentials, props::{UnAuthorixedProps, ServerErrorProps, NotFoundProps}}, repositories::{auth::AuthRepository, roles::RoleRepository, people::PersonRepository}, functions::responses::{unauthorized, server_error, not_found}, commands::users::load_db_connection};
 
 use super::{DbConn, CacheConn};
 
@@ -27,12 +27,26 @@ pub async fn login(credentials: Json<Credentials>, db: DbConn, mut cache: Connec
       })
   }).await?;
 
-  let mut c = load_db_connection();
-  let roles = RoleRepository::find_by_user(&mut c, &user)
+  let mut conn1 = load_db_connection();
+  let roles = RoleRepository::find_by_user(&mut conn1, &user)
     .map_err(|e| {
-      let params: UnAuthorixedProps = UnAuthorixedProps::new("login".to_string(), &username_cache);
-      unauthorized(e.into(), params)
-    });
+      let params: NotFoundProps = NotFoundProps::new("login".to_string(), user.id, "roles".to_string());
+      not_found(e.into(), params)
+    })?;
+
+  let mut conn2 = load_db_connection();
+  let person = PersonRepository::find_by_user(&mut conn2, user.id)
+    .map_err(|e| {
+      let params: NotFoundProps = NotFoundProps::new("login".to_string(), user.id, "people".to_string());
+      not_found(e.into(), params)
+    })?;
+
+  let mut conn3 = load_db_connection();
+  let parents = PersonRepository::find_parents(&mut conn3, user.id)
+    .map_err(|e| {
+      let params: NotFoundProps = NotFoundProps::new("login".to_string(), user.id, "people".to_string());
+      not_found(e.into(), params)
+    })?;
 
   let token = AuthRepository::authorize_user(&user, &credentials)
     .map_err(|e| {
@@ -47,7 +61,7 @@ pub async fn login(credentials: Json<Credentials>, db: DbConn, mut cache: Connec
     3*60*60
   )
   .await
-  .map(|_| Custom(Status::Ok, json!({"token": token, "user": user, "roles": roles.unwrap()})))
+  .map(|_| Custom(Status::Ok, json!({"token": token, "user": user, "person": person, "parents": parents, "roles": roles})))
   .map_err(|e| {
     let params: UnAuthorixedProps = UnAuthorixedProps::new("login".to_string(), &username_cache);
     unauthorized(e.into(), params)
