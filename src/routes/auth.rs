@@ -1,7 +1,7 @@
 use rocket::{serde::json::{Json, serde_json::json, Value}, response::status::Custom, http::Status};
 use rocket_db_pools::{Connection, deadpool_redis::redis::AsyncCommands};
 
-use crate::{models::{auth::Credentials, props::{UnAuthorixedProps, ServerErrorProps}}, repositories::auth::AuthRepository, functions::responses::{unauthorized, server_error}};
+use crate::{models::{auth::Credentials, props::{UnAuthorixedProps, ServerErrorProps}}, repositories::{auth::AuthRepository, roles::RoleRepository}, functions::responses::{unauthorized, server_error}, commands::users::load_db_connection};
 
 use super::{DbConn, CacheConn};
 
@@ -27,6 +27,13 @@ pub async fn login(credentials: Json<Credentials>, db: DbConn, mut cache: Connec
       })
   }).await?;
 
+  let mut c = load_db_connection();
+  let roles = RoleRepository::find_by_user(&mut c, &user)
+    .map_err(|e| {
+      let params: UnAuthorixedProps = UnAuthorixedProps::new("login".to_string(), &username_cache);
+      unauthorized(e.into(), params)
+    });
+
   let token = AuthRepository::authorize_user(&user, &credentials)
     .map_err(|e| {
       let message: String = format!("Wrong credentials for service login with username {} with message: {}", credentials.username, e);
@@ -40,7 +47,7 @@ pub async fn login(credentials: Json<Credentials>, db: DbConn, mut cache: Connec
     3*60*60
   )
   .await
-  .map(|_| Custom(Status::Ok, json!({"token": token})))
+  .map(|_| Custom(Status::Ok, json!({"token": token, "user": user, "roles": roles.unwrap()})))
   .map_err(|e| {
     let params: UnAuthorixedProps = UnAuthorixedProps::new("login".to_string(), &username_cache);
     unauthorized(e.into(), params)

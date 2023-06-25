@@ -2,7 +2,7 @@ use diesel::{PgConnection, Connection};
 
 use crate::{models::users::NewUser, repositories::{users::UserRepository, roles::RoleRepository, auth::AuthRepository}};
 
-fn load_db_connection() -> PgConnection {
+pub fn load_db_connection() -> PgConnection {
   let database_url = std::env::var("DATABASE_URL")
     .expect("Cannot load DB url from env");
   PgConnection::establish(&database_url)
