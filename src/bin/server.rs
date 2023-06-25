@@ -22,12 +22,12 @@ async fn main() {
         basquet::routes::categories::update_category,
         basquet::routes::categories::delete_category,
       ])
-      .mount("/users", rocket::routes![
-        basquet::routes::users::get_users,
-        basquet::routes::users::view_user,
-        basquet::routes::users::create_user,
-        basquet::routes::users::update_user,
-        basquet::routes::users::delete_user,
+      .mount("/payments", rocket::routes![
+        basquet::routes::payments::get_payments,
+        basquet::routes::payments::view_payment,
+        basquet::routes::payments::create_payment,
+        basquet::routes::payments::update_payment,
+        basquet::routes::payments::delete_payment,
       ])
       .mount("/people", rocket::routes![
         basquet::routes::people::get_people,
@@ -42,6 +42,13 @@ async fn main() {
         basquet::routes::students::create_student,
         basquet::routes::students::update_student,
         basquet::routes::students::delete_student,
+      ])
+      .mount("/users", rocket::routes![
+        basquet::routes::users::get_users,
+        basquet::routes::users::view_user,
+        basquet::routes::users::create_user,
+        basquet::routes::users::update_user,
+        basquet::routes::users::delete_user,
       ])
       .attach(basquet::routes::DbConn::fairing())
       .attach(basquet::routes::CacheConn::init())

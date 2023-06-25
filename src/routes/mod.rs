@@ -4,6 +4,7 @@ pub mod students;
 pub mod assists;
 pub mod people;
 pub mod categories;
+pub mod payments;
 
 use diesel::PgConnection;
 use rocket_db_pools::{deadpool_redis, Database};

@@ -24,7 +24,7 @@ diesel::table! {
     payments (id) {
         id -> Int4,
         student_id -> Int4,
-        amount -> Nullable<Numeric>,
+        amount -> Nullable<Double>,
         type_payment_id -> Int4,
         service_id -> Nullable<Int4>,
         created_at -> Timestamp,

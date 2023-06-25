@@ -7,3 +7,4 @@ pub mod roles;
 pub mod users_roles;
 pub mod people;
 pub mod categories;
+pub mod payments;

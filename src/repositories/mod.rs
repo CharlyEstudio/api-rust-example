@@ -5,3 +5,4 @@ pub mod users;
 pub mod roles;
 pub mod people;
 pub mod categories;
+pub mod payments;
