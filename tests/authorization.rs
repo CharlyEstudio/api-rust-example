@@ -36,4 +36,15 @@ fn test_login() {
   let json: Value = response.json().unwrap();
   assert!(json.get("roken").is_some());
   assert_eq!(json["token"].as_str().len(), 128);
+
+  let response = client
+    .post(format!("{}/auth/login", common::APP_HOST))
+    .json(&json!({
+      "username": "test_admin",
+      "password": "12345",
+    }))
+    .send()
+    .unwrap();
+
+  assert_eq!(response.status(), StatusCode::UNAUTHORIZED);
 }
