@@ -3,7 +3,7 @@ use diesel::{Queryable, Insertable, Identifiable};
 use serde::Serialize;
 use crate::schema::roles;
 
-#[derive(Queryable, Identifiable, Debug, Serialize)]
+#[derive(Queryable, Identifiable, Debug, Serialize, Clone)]
 pub struct Role {
   pub id: i32,
   pub code: String,

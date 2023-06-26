@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 use crate::schema::people;
 
 
-#[derive(Queryable, AsChangeset, Deserialize, Serialize)]
+#[derive(Queryable, AsChangeset, Deserialize, Serialize, Clone)]
 #[diesel(table_name=people)]
 pub struct Person {
   #[serde(skip_deserializing)]
