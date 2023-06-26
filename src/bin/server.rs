@@ -5,6 +5,9 @@ use rocket_db_pools::Database;
 #[rocket::main]
 async fn main() {
     let _ = rocket::build()
+      .mount("/", rocket::routes![
+        basquet::functions::security::options,
+      ])
       .mount("/assists", rocket::routes![
         basquet::routes::assists::get_assists,
         basquet::routes::assists::view_presence,
@@ -57,6 +60,7 @@ async fn main() {
         basquet::routes::type_payments::update_type_payment,
         basquet::routes::type_payments::delete_type_payment,
       ])
+      .attach(basquet::functions::security::Cors)
       .attach(basquet::routes::DbConn::fairing())
       .attach(basquet::routes::CacheConn::init())
       .launch()
