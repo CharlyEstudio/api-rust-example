@@ -5,6 +5,7 @@ use super::{users::User, people::Person, roles::Role};
 #[derive(Serialize)]
 pub struct SignIn {
   pub token: String,
+  pub status: bool,
   pub user: User,
   pub person: Person,
   pub roles: Vec<Role>,
@@ -12,8 +13,8 @@ pub struct SignIn {
 }
 
 impl SignIn {
-  pub fn new(token: String, user: User, person: Person, roles: Vec<Role>, user_with_roles: Vec<UserWithRoles>) -> Self {
-    Self { token, user, person, roles, parents: user_with_roles }
+  pub fn new(token: String, status: bool, user: User, person: Person, roles: Vec<Role>, user_with_roles: Vec<UserWithRoles>) -> Self {
+    Self { token, status, user, person, roles, parents: user_with_roles }
   }
 }
 

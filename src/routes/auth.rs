@@ -81,6 +81,7 @@ pub async fn login(credentials: Json<Credentials>, db: DbConn, mut cache: Connec
 
   let signin_data = SignIn::new(
     token.clone(),
+    true,
     user.clone(),
     person,
     roles,
