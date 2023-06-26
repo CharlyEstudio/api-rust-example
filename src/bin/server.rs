@@ -47,6 +47,7 @@ async fn main() {
         basquet::routes::students::delete_student,
       ])
       .mount("/users", rocket::routes![
+        basquet::routes::users::me,
         basquet::routes::users::get_users,
         basquet::routes::users::view_user,
         basquet::routes::users::create_user,

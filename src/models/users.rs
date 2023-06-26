@@ -7,6 +7,7 @@ use crate::schema::users;
 pub struct User {
   pub id: i32,
   pub username: String,
+  #[serde(skip_serializing)]
   pub password: String,
   pub active: Option<bool>,
   pub created_at: NaiveDateTime,

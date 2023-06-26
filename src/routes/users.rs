@@ -36,6 +36,11 @@ pub async fn view_user(id: i32, db: DbConn, _user: User) -> Result<Value, Custom
   }).await
 }
 
+#[rocket::get("/me")]
+pub async fn me(user: User) -> Custom<Value> {
+  Custom(Status::Ok, json!(user))
+}
+
 #[rocket::post("/", format="json", data="<new_user>")]
 pub async fn create_user(new_user: Json<NewUser>, db: DbConn, _user: User) -> Result<Custom<Value>, Custom<Value>> {
   db.run(move |c| {
