@@ -48,7 +48,6 @@ pub async fn login(credentials: Json<Credentials>, db: DbConn, mut cache: Connec
 
   let mut parents_with_roles = Vec::<UserWithRoles>::new();
   for parent in parents.clone() {
-    println!("Parent name {} user id {}", parent.name, parent.parent_id);
     let up: crate::models::users::User = UserRepository::find(&mut conn1, parent.user_id).map_err(|e| {
       let params: NotFoundProps = NotFoundProps::new("login".to_string(), parent.user_id, "user".to_string());
       not_found(e.into(), params)
